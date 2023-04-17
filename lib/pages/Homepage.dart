@@ -2,10 +2,12 @@ import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+  HomePage({super.key, required this.pa});
+  final Function()? pa;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -74,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                           Padding(
                             padding: EdgeInsets.all(18),
                             child: IconButton(
-                              onPressed: () {},
+                              onPressed: widget.pa,
                               icon: Icon(
                                 Icons.person_add_alt_1,
                                 size: 30,
@@ -177,6 +179,6 @@ class _HomePageState extends State<HomePage> {
           ]))
         ],
       ),
-    );
+    ).animate().blurXY(begin: 100, end: 0, delay: Duration(milliseconds: 100));
   }
 }

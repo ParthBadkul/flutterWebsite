@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:webapp/firebase_options.dart';
 // import 'package:webapp/screens/Homepage.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:webapp/screens/Homepage.dart';
+import 'package:webapp/pages/Homepage.dart';
 import 'package:webapp/screens/auth_page.dart';
 
 Future<void> main() async {

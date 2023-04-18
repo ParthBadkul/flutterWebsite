@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -12,9 +13,12 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  var emailCOntroller = TextEditingController();
-  var passwordCOntroller = TextEditingController();
-  var re_passController = TextEditingController();
+  final emailCOntroller = TextEditingController();
+  final passwordCOntroller = TextEditingController();
+  final re_passController = TextEditingController();
+  final _firstnameController = TextEditingController();
+  final _lastnameController = TextEditingController();
+  final _ageController = TextEditingController();
   void wrong(String p) {
     showDialog(
       context: context,
@@ -26,11 +30,16 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  void signUp() {
+  Future signUp() async {
     if (passwordCOntroller.text == re_passController.text) {
       try {
-        FirebaseAuth.instance.createUserWithEmailAndPassword(
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
             email: emailCOntroller.text, password: passwordCOntroller.text);
+
+        // add user details
+        addUserDetails(_firstnameController.text, _lastnameController.text,
+            int.parse(_ageController.text), emailCOntroller.text);
+        //
       } on FirebaseAuthException catch (e) {
         String p = e.code;
         return wrong(p);
@@ -41,9 +50,25 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
+  Future addUserDetails(
+    String firstname,
+    String lastname,
+    int age,
+    String email,
+  ) async {
+    await FirebaseFirestore.instance.collection('users').add({
+      'first name': firstname,
+      'last name': lastname,
+      'age': age,
+      'email': email,
+      // 'age' : '',
+    });
+  }
+
   @override
   @override
   Widget build(BuildContext context) {
+    final myWidgetKey = GlobalKey();
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -53,8 +78,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 Row(
                   children: [
                     Container(
+                      key: myWidgetKey,
                       width: MediaQuery.of(context).size.width / 2,
-                      height: MediaQuery.of(context).size.height,
+                      height: MediaQuery.of(context).size.height * 1.7,
                       color: Colors.black45,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,10 +89,10 @@ class _RegisterPageState extends State<RegisterPage> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: EdgeInsets.all(18),
+                                padding: const EdgeInsets.all(18),
                                 child: IconButton(
                                   onPressed: widget.pa,
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.login,
                                     size: 30,
                                   ),
@@ -74,7 +100,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 50,
                           ),
                           Center(
@@ -86,7 +112,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   letterSpacing: 1.7),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 90,
                           ),
                           Padding(
@@ -116,7 +142,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     hintText: "Email",
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 20,
                                 ),
                                 Text(
@@ -169,11 +195,89 @@ class _RegisterPageState extends State<RegisterPage> {
                                           gapPadding: 0),
                                       hintText: " re-enter password",
                                       contentPadding: EdgeInsets.all(12)),
-                                )
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  ' First Name',
+                                  style: GoogleFonts.anekKannada(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                TextField(
+                                  controller: _firstnameController,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        gapPadding: 12),
+                                    hintText: "First Name",
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  ' Last Name',
+                                  style: GoogleFonts.anekKannada(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                TextField(
+                                  controller: _lastnameController,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        gapPadding: 12),
+                                    hintText: "Last Name",
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Text(
+                                  ' Age',
+                                  style: GoogleFonts.anekKannada(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                TextField(
+                                  controller: _ageController,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        gapPadding: 12),
+                                    hintText: "Age",
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                ),
                               ],
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 30,
                           ),
                           Padding(
@@ -195,7 +299,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     Container(
                       width: MediaQuery.of(context).size.width / 2,
                       color: Colors.white60,
-                      height: MediaQuery.of(context).size.height,
+                      // height: double.infinity,
+                      height: MediaQuery.of(context).size.height * 1.7,
+                      // RenderBox rend =  myWidgetKey.currentContext!.findRenderObject() as RenderBox ,
                       child: Center(
                         child: Text(
                           'B&W Web',

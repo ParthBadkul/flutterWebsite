@@ -24,7 +24,11 @@ class _LoggedInState extends State<LoggedIn> {
   // Method for getting docID
 
   Future getDocID() async {
-    await FirebaseFirestore.instance.collection('users').get().then(
+    await FirebaseFirestore.instance
+        .collection('users')
+        .orderBy('age', descending: true)
+        .get()
+        .then(
           (snapshot) => snapshot.docs.forEach((document) {
             print(document.reference);
             docIDs.add(document.reference.id);

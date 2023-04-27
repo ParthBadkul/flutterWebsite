@@ -21,6 +21,8 @@ class _LoggedInState extends State<LoggedIn> {
   // docuent IDs
   List<String> docIDs = [];
 
+  // Method for getting docID
+
   Future getDocID() async {
     await FirebaseFirestore.instance.collection('users').get().then(
           (snapshot) => snapshot.docs.forEach((document) {
@@ -34,20 +36,24 @@ class _LoggedInState extends State<LoggedIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Logged in As :  ${user?.email}',
+          style: TextStyle(
+            fontSize: 22,
+            color: Colors.white,
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: signuserOut,
+            icon: Icon(Icons.logout_outlined),
+          ),
+        ],
+      ),
       body: Center(
         child: Column(
           children: [
-            Text(
-              'Logged in As :  ${user?.email}',
-              style: TextStyle(
-                fontSize: 22,
-                color: Colors.white,
-              ),
-            ),
-            IconButton(
-              onPressed: signuserOut,
-              icon: Icon(Icons.logout_outlined),
-            ),
             Expanded(
                 child: FutureBuilder(
               future: getDocID(),
